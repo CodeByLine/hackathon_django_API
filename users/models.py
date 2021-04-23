@@ -1,4 +1,4 @@
-### models.py 
+### users/models.py 
 
 from django.db import models
 
@@ -50,8 +50,9 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
+        pass
+        # "Does the user have a specific permission?"
+        ## Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
@@ -90,9 +91,9 @@ class UserProfile(models.Model):
 
     current_level = models.IntegerField(choices=LEVELS)
 
-    phone = models.Charfield(max_length=50) #need something rom localization library for int'l numbers
+    phone = models.CharField(max_length=50) #need something rom localization library for int'l numbers
 
-    timezone = modles.CharField(max_length=50)
+    timezone = models.CharField(max_length=50)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
