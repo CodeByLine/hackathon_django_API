@@ -1,10 +1,10 @@
-#users/admin.py 
-# from django.apps import AppConfig
+## users/admin.py 
+from django.apps import AppConfig
 
 
-# class UsersConfig(AppConfig):
-#     default_auto_field = 'django.db.models.BigAutoField'
-#     name = 'users'
+class UsersConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'users'
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -12,11 +12,12 @@ from .models import User, UserProfile
 
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('email', 'is_staff', 'is_admin')
-    list_filter = ('is_admin',)
+##    pass
+    list_display = ('id', 'email', 'is_student', 'is_staff', 'is_admin')
+    list_filter = ('is_student', 'is_staff', 'is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_admin', 'is_staff')}),
+        ('Permissions', {'fields': ('is_student', 'is_admin', 'is_staff')}),
     )
 
     add_fieldsets = (
@@ -32,7 +33,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'bio', 'preferred_name')
 
 
 admin.site.register(User, UserAdmin)

@@ -1,12 +1,9 @@
-### users/models.py 
-
 from django.db import models
-
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
 
-# extend-to use email as username
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         if not email:
@@ -27,6 +24,7 @@ class CustomUserManager(BaseUserManager):
         )
         user.is_admin = True
         user.is_staff = True
+        # user.is_superuser =True
         user.save(using=self._db)
         return user
 
@@ -41,6 +39,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
 
@@ -50,16 +49,29 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        pass
-        # "Does the user have a specific permission?"
-        ## Simplest possible answer: Yes, always
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
         return True
+        # self.is_superuser
 
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
+        # return self.is_superuser
+###
+class MyUser(AbstractBaseUser):
+  ...
+  def has_perm(self, perm, obj=None):
+    return self.is_superuser
 
+  def has_module_perms(self, app_label):
+    return self.is_superuser
+
+
+
+
+###
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -67,33 +79,23 @@ class UserProfile(models.Model):
         on_delete=models.CASCADE,
         primary_key=True,
     )
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    preferred_name = models.CharField(max_length=100)
-    discord_name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='profile-images')
-    fb_profile = models.CharField(max_length=100)
-    twitter_profile = models.CharField(max_length=100)
-    linkedin_profile = models.CharField(max_length=100)
-    website = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    bio = models.TextField(default='', blank=True)
+    preferred_name = models.CharField(max_length=100, null=True)
+    avatar_url = models.CharField(max_length=255, null=False)
+    discord_name = models.CharField(max_length=100, null=False)
     github_username = models.CharField(max_length=100)
-    codenpen_username = models.CharField(max_length=100)
-    college_profile_url = models.CharField(max_length=100)
-    gender = models.CharField(max_length=100)
-    
+    codepen_username = models.CharField(max_length=100, null=False)
+    college_profile_url = models.CharField(max_length=255, null=True)
 
     LEVELS = (
         (1, 'Level One'),
         (2, 'Level Two'),
-        (3, 'Level Three'),
-        (4, 'Level Four'),
     )
+    current_level = models.IntegerField(choices=LEVELS, default=1)
 
-    current_level = models.IntegerField(choices=LEVELS)
-
-    phone = models.CharField(max_length=50) #need something rom localization library for int'l numbers
-
-    timezone = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50, null=True)
+    timezone = models.CharField(max_length=50, null=True)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.name}'

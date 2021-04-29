@@ -2,7 +2,10 @@
 
 from django.urls import path, include
 from rest_framework import routers
-from .views import UserViewSet
+from users.views import UserViewSet
+from .views import (
+    UserViewSet, #SubmissionsViewSet, CustomAuthToken, UserProfileView
+)
 
 
 # Django REST Framework router
