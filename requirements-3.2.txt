@@ -1,5 +1,5 @@
 asgiref==3.3.4
-Django==3.1.13
+Django==3.2.25
 djangorestframework==3.12.4
 flake8==3.9.1
 mccabe==0.6.1
